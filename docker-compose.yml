@@ -1,0 +1,25 @@
+version: "3"
+services:
+  app:
+    image: guizo/docker-laravel:php8.0-apache-postgres
+    ports:
+      - 8001:80
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - TZ=America/Sao_Paulo
+  db:
+    image: postgres:13
+    ports:
+      - 3001:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    working_dir: /home/db
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=turnoverbnb_products
+volumes:
+  dbdata:
+    driver: local
