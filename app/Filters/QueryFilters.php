@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 
 class QueryFilters
 {
-    protected $data;
-    protected $builder;
+    protected array $data;
+    protected Builder $builder;
 
     public function __construct(array $data)
     {
         $this->data = $data;
     }
 
-    public function apply(Builder $builder)
+    public function apply(Builder $builder): Builder
     {
         $this->builder = $builder;
 
@@ -34,7 +34,8 @@ class QueryFilters
         return $this->builder;
     }
 
-    public function data() {
+    public function data(): array
+    {
         return $this->data;
     }
 }

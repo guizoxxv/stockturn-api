@@ -7,13 +7,13 @@ use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Filters\ProductFilter;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $seed = true;
-
+    protected bool $seed = true;
     private ProductService $productService;
 
     public function setUp(): void
@@ -23,7 +23,7 @@ class ProductServiceTest extends TestCase
         $this->productService = app(ProductService::class);
     }
 
-    public function test_index_without_filter()
+    public function test_index_without_filter(): void
     {
         $filter = new ProductFilter([]);
 
@@ -32,7 +32,7 @@ class ProductServiceTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
-    public function test_index_with_filter()
+    public function test_index_with_filter(): void
     {
         $filter = new ProductFilter([
             'fromPrice' => 500,
@@ -47,7 +47,7 @@ class ProductServiceTest extends TestCase
         $this->assertTrue($isValid);
     }
 
-    public function test_index_validator()
+    public function test_index_validator(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -56,5 +56,19 @@ class ProductServiceTest extends TestCase
         ]);
 
         $this->productService->index($filter);
+    }
+
+    public function test_show(): void
+    {
+        $result = $this->productService->show(1);
+
+        $this->assertNotNull($result);
+    }
+
+    public function test_show_404(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->productService->show(0);
     }
 }

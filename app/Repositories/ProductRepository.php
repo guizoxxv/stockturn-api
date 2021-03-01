@@ -15,4 +15,9 @@ class ProductRepository
 
         return Product::filter($filter)->paginate($limit);
     }
+
+    public function find(int $productId): Product
+    {
+        return Product::findOrFail($productId);
+    }
 }

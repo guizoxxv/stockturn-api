@@ -7,6 +7,7 @@ use App\Filters\ProductFilter;
 use Validator;
 use Illuminate\Validation\ValidationException;
 use App\Validation\Rules\Sortable;
+use App\Models\Product;
 
 class ProductService
 {
@@ -36,5 +37,10 @@ class ProductService
         }
 
         return $this->productRepository->findAll($filter);
+    }
+
+    public function show(int $productId): Product
+    {
+        return $this->productRepository->find($productId);
     }
 }

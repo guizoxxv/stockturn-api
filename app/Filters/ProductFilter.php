@@ -4,35 +4,40 @@ namespace App\Filters;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductFilter extends QueryFilters
 {
-    protected $data;
+    protected array $data;
 
     public function __construct(array $data)
     {
         $this->data = $data;
     }
 
-    public function name($term = null) {
+    public function name(string $term = null): Builder
+    {
         if ($term) {
             return $this->builder->where('name', 'ILIKE', "%$term%");
         }
     }
 
-    public function fromPrice($term = null) {
+    public function fromPrice(string $term = null): Builder
+    {
         if ($term) {
             return $this->builder->where('price', '>=', $term);
         }
     }
 
-    public function toPrice($term = null) {
+    public function toPrice(string $term = null): Builder
+    {
         if ($term) {
             return $this->builder->where('price', '<=', $term);
         }
     }
 
-    public function sort($term = null) {
+    public function sort(string $term = null): Builder
+    {
         if ($term) {
             $term = explode(':', $term);
 
