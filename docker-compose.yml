@@ -20,6 +20,20 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=turnoverbnb_products
+  dbtest:
+    image: postgres:13
+    ports:
+      - 3002:5432
+    volumes:
+      - dbtestdata:/var/lib/postgresql/data
+    working_dir: /home/db
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=turnoverbnb_products_test
 volumes:
   dbdata:
+    driver: local
+  dbtestdata:
     driver: local
