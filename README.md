@@ -9,4 +9,4 @@
 127.0.0.1   api.local.test
 ```
 
-The backend (this application) is hosted at `http://api.local.test:8001` and the frontend at `http://local.test:8080`.
+The backend (this application) is hosted at `http://api.local.test:8001` and the frontend at `http://local.test:3000`.
