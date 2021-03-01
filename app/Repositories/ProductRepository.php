@@ -3,11 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use App\Filters\ProductFilter;
 
 class ProductRepository
 {
-    public function findAll()
+    public function findAll(ProductFilter $filter)
     {
-        return Product::paginate(20);
+        $filterData = $filter->data();
+
+        $limit = $filterData['limit'] ?? 20;
+
+        return Product::filter($filter)->paginate($limit);
     }
 }

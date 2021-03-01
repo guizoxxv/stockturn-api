@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Filters\ProductFilter;
+use Illuminate\Validation\ValidationException;
 
 class ProductServiceTest extends TestCase
 {
@@ -21,15 +23,38 @@ class ProductServiceTest extends TestCase
         $this->productService = app(ProductService::class);
     }
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function test_index()
+    public function test_index_without_filter()
     {
-        $result = $this->productService->index();
+        $filter = new ProductFilter([]);
+
+        $result = $this->productService->index($filter);
 
         $this->assertNotEmpty($result);
+    }
+
+    public function test_index_with_filter()
+    {
+        $filter = new ProductFilter([
+            'fromPrice' => 500,
+        ]);
+
+        $result = $this->productService->index($filter);
+
+        $isValid = collect($result->items())->every(function ($item, $key) {
+            return $item->price > 500;
+        });
+
+        $this->assertTrue($isValid);
+    }
+
+    public function test_index_validator()
+    {
+        $this->expectException(ValidationException::class);
+
+        $filter = new ProductFilter([
+            'page' => 0,
+        ]);
+
+        $this->productService->index($filter);
     }
 }

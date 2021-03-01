@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use App\Filters\ProductFilter;
 
 class ProductController extends Controller
 {
@@ -20,9 +21,11 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->productService->index();
+        $filter = new ProductFilter($request->all());
+
+        return $this->productService->index($filter);
     }
 
     /**
