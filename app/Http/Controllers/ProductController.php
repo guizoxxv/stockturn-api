@@ -24,9 +24,9 @@ class ProductController extends Controller
         return $this->productService->index($filter);
     }
 
-    public function store(Request $request): Response
+    public function store(Request $request): Product
     {
-        //
+        return $this->productService->store($request->all());
     }
 
     public function show(string $productId): Product

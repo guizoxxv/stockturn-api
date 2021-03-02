@@ -9,4 +9,9 @@ use App\Filters\Filterable;
 class Product extends Model
 {
     use HasFactory, Filterable;
+
+    protected $fillable = [
+        'name',
+        'price',
+    ];
 }

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Filters\ProductFilter;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Product;
 
 class ProductServiceTest extends TestCase
 {
@@ -47,7 +48,7 @@ class ProductServiceTest extends TestCase
         $this->assertTrue($isValid);
     }
 
-    public function test_index_validator(): void
+    public function test_index_invalid(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -81,5 +82,24 @@ class ProductServiceTest extends TestCase
         $result = $this->productService->destroy(0);
 
         $this->assertEquals(0, $result);
+    }
+
+    public function test_store(): void
+    {
+        $result = $this->productService->store([
+            'name' => 'Product A',
+            'price' => 10.00,
+        ]);
+
+        $this->assertInstanceOf(Product::class, $result);
+    }
+
+    public function test_store_invalid(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        $this->productService->store([
+            'name' => 'Product A',
+        ]);
     }
 }

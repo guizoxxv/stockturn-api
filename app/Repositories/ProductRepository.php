@@ -21,6 +21,11 @@ class ProductRepository
         return Product::findOrFail($productId);
     }
 
+    public function create(array $data): Product
+    {
+        return Product::create($data);
+    }
+
     public function destroy(int $productId): int
     {
         return Product::destroy($productId);
