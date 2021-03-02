@@ -29,9 +29,13 @@ class ProductController extends Controller
         //
     }
 
-    public function show(int $productId): Product
+    public function show(string $productId): Product
     {
-        return $this->productService->show($productId);
+        if (!is_numeric($productId)) {
+            abort(400, 'Bad request');
+        }
+
+        return $this->productService->show((int)$productId);
     }
 
     public function update(Request $request, Product $product): Response
@@ -39,8 +43,14 @@ class ProductController extends Controller
         //
     }
 
-    public function destroy(Product $product): Response
+    public function destroy(string $productId): Response
     {
-        //
+        if (!is_numeric($productId)) {
+            abort(400, 'Bad request');
+        }
+
+        $this->productService->destroy((int)$productId);
+
+        return response()->noContent();
     }
 }

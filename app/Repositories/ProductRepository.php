@@ -20,4 +20,9 @@ class ProductRepository
     {
         return Product::findOrFail($productId);
     }
+
+    public function destroy(int $productId): int
+    {
+        return Product::destroy($productId);
+    }
 }

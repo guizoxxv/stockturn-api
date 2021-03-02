@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Repositories\ProductRepository;
 use App\Filters\ProductFilter;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Validation\Rules\Sortable;
 use App\Models\Product;
@@ -42,5 +42,10 @@ class ProductService
     public function show(int $productId): Product
     {
         return $this->productRepository->find($productId);
+    }
+
+    public function destroy(int $productId): int
+    {
+        return $this->productRepository->destroy($productId);
     }
 }

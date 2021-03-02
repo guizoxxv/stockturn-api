@@ -71,4 +71,15 @@ class ProductServiceTest extends TestCase
 
         $this->productService->show(0);
     }
+
+    public function test_destroy(): void
+    {
+        $result = $this->productService->destroy(1);
+
+        $this->assertEquals(1, $result);
+
+        $result = $this->productService->destroy(0);
+
+        $this->assertEquals(0, $result);
+    }
 }
