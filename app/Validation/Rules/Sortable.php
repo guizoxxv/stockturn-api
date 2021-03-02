@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Sortable implements Rule
 {
-    private $availableColumns;
+    private array $availableColumns;
 
     /**
      * Create a new rule instance.
@@ -25,7 +25,7 @@ class Sortable implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $value = explode(':', $value);
 
@@ -45,7 +45,7 @@ class Sortable implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Sort field is invalid.';
     }

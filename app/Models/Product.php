@@ -20,5 +20,6 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'float',
+        'stockTimeline' => 'array',
     ];
 }

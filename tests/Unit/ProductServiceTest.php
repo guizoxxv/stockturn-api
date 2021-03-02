@@ -78,7 +78,10 @@ class ProductServiceTest extends TestCase
         $result = $this->productService->destroy(1);
 
         $this->assertEquals(1, $result);
+    }
 
+    public function test_destroy_inexistent(): void
+    {
         $result = $this->productService->destroy(0);
 
         $this->assertEquals(0, $result);
@@ -101,6 +104,35 @@ class ProductServiceTest extends TestCase
 
         $this->productService->store([
             'name' => 'Product A',
+        ]);
+    }
+
+    public function test_store_invalid_stockTimeline(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        $this->productService->store([
+            'name' => 'Product A',
+            'sku' => uniqid(),
+            'price' => 10.00,
+            'stockTimeline' => [
+                [
+                    'stock' => 10,
+                    'date' => '2021-03-02', // invalid date format
+                ]
+            ]
+        ]);
+    }
+
+    public function test_store_unique_sku(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        $sku = Product::first()->sku;
+
+        $this->productService->store([
+            'name' => 'Product A',
+            'sku' => $sku,
         ]);
     }
 

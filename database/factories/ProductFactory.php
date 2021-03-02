@@ -19,7 +19,7 @@ class ProductFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker
@@ -32,8 +32,12 @@ class ProductFactory extends Factory
         ];
     }
 
-    private function generateStockTimeline()
+    private function generateStockTimeline(): array|null
     {
+        if ($this->faker->boolean(25)) {
+            return null;
+        }
+
         $count = $this->faker->numberBetween(0, 10);
 
         $stockTimeline = collect([]);
@@ -41,12 +45,12 @@ class ProductFactory extends Factory
         for($i = 0; $i < $count; $i++) {
             $item = [
                 'stock' => $this->faker->numberBetween(0, 100),
-                'date' => $this->faker->dateTimeThisYear(),
+                'date' => $this->faker->dateTimeThisYear()->format('Y-m-d H:i'),
             ];
 
             $stockTimeline->push($item);
         }
 
-        return $stockTimeline->sortBy('date')->toJson();
+        return $stockTimeline->sortBy('date')->values()->toArray();
     }
 }

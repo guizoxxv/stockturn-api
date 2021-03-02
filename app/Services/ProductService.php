@@ -29,7 +29,16 @@ class ProductService
                 'price' => 'nullable|numeric|min:0',
                 'page' => 'nullable|integer|min:1',
                 'limit' => 'nullable|integer|min:1',
-                'sort' => [new Sortable(['name', 'price'])],
+                'sort' => [
+                    new Sortable([
+                        'name',
+                        'sku',
+                        'price',
+                        'stock',
+                        'created_at',
+                        'updated_at',
+                    ])
+                ],
             ]);
 
             if ($validator->fails()) {
@@ -49,9 +58,12 @@ class ProductService
     {
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:255',
+            'sku' => 'required|string|max:255|unique:products',
             'price' => 'required|numeric|min:0',
-            'quantity' => 'nullable|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
+            'stockTimeline' => ['nullable','array'],
+            'stockTimeline.*.stock' => 'required|integer|min:0',
+            'stockTimeline.*.date' => 'required|date_format:Y-m-d H:i',
         ]);
 
         if ($validator->fails()) {
@@ -67,7 +79,10 @@ class ProductService
             'name' => 'nullable|string|max:255',
             'sku' => 'nullable|string|max:255',
             'price' => 'nullable|numeric|min:0',
-            'quantity' => 'nullable|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
+            'stockTimeline' => ['nullable', 'array'],
+            'stockTimeline.*.stock' => 'required|integer|min:0',
+            'stockTimeline.*.date' => 'required|date_format:Y-m-d H:i',
         ]);
 
         if ($validator->fails()) {
