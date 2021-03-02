@@ -58,6 +58,20 @@ class ProductService
         return $this->productRepository->create($data);
     }
 
+    public function update(array $data, int $productId): Product
+    {
+        $validator = Validator::make($data, [
+            'name' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->all());
+        }
+
+        return $this->productRepository->update($data, $productId);
+    }
+
     public function destroy(int $productId): int
     {
         return $this->productRepository->destroy($productId);

@@ -102,4 +102,40 @@ class ProductServiceTest extends TestCase
             'name' => 'Product A',
         ]);
     }
+
+    public function test_update(): void
+    {
+        $result = $this->productService->update(
+            [
+                'name' => 'Product 2',
+            ],
+            1,
+        );
+
+        $this->assertEquals('Product 2', $result->name);
+    }
+
+    public function test_update_invalid(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        $this->productService->update(
+            [
+                'price' => -10,
+            ],
+            1
+        );
+    }
+
+    public function test_update_404(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->productService->update(
+            [
+                'name' => 'Product 2',
+            ],
+            0
+        );
+    }
 }

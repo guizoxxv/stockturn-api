@@ -26,6 +26,11 @@ class ProductRepository
         return Product::create($data);
     }
 
+    public function update(array $data, int $productId): Product
+    {
+        return tap(Product::findOrFail($productId))->update($data);
+    }
+
     public function destroy(int $productId): int
     {
         return Product::destroy($productId);

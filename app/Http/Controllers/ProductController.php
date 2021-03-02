@@ -38,9 +38,13 @@ class ProductController extends Controller
         return $this->productService->show((int)$productId);
     }
 
-    public function update(Request $request, Product $product): Response
+    public function update(Request $request, string $productId): Product
     {
-        //
+        if (!is_numeric($productId)) {
+            abort(400, 'Bad request');
+        }
+
+        return $this->productService->update($request->all(), (int)$productId);
     }
 
     public function destroy(string $productId): Response
