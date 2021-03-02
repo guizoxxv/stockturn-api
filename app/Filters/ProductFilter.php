@@ -41,6 +41,20 @@ class ProductFilter extends QueryFilters
         }
     }
 
+    public function fromDate(string $term = null): Builder
+    {
+        if ($term) {
+            return $this->builder->whereDate('created_at', '>=', $term);
+        }
+    }
+
+    public function toDate(string $term = null): Builder
+    {
+        if ($term) {
+            return $this->builder->whereDate('created_at', '<=', $term);
+        }
+    }
+
     public function sort(string $term = null): Builder
     {
         if ($term) {

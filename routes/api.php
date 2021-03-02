@@ -31,3 +31,5 @@ Route::resource('products', ProductController::class)
         'edit',
     ])
     ->middleware('auth:sanctum');
+
+Route::post('/products/bulk', [ProductController::class, 'bulkUpsert']);

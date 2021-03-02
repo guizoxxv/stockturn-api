@@ -26,7 +26,10 @@ class ProductService
         if (count($filterData) > 0) {
             $validator = Validator::make($filterData, [
                 'name' => 'nullable|string|max:255',
-                'price' => 'nullable|numeric|min:0',
+                'fromPrice' => 'nullable|numeric|min:0',
+                'toPrice' => 'nullable|numeric|min:0',
+                'fromDate' => 'nullable|date|date_format:Y-m-d',
+                'toDate' => 'nullable|date|date_format:Y-m-d',
                 'page' => 'nullable|integer|min:1',
                 'limit' => 'nullable|integer|min:1',
                 'sort' => [
@@ -77,7 +80,7 @@ class ProductService
     {
         $validator = Validator::make($data, [
             'name' => 'nullable|string|max:255',
-            'sku' => 'nullable|string|max:255',
+            'sku' => 'nullable|string|max:255|unique:products',
             'price' => 'nullable|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
             'stockTimeline' => ['nullable', 'array'],
@@ -95,5 +98,46 @@ class ProductService
     public function destroy(int $productId): int
     {
         return $this->productRepository->destroy($productId);
+    }
+
+    public function buckUpsert(array $data): array
+    {
+        $created = 0;
+        $updated = 0;
+
+        $validator = Validator::make($data, [
+            'products' => 'required|array',
+            'products.*.id' => 'nullable|integer|exists:products',
+            'products.*.name' => 'nullable|string|max:255',
+            'products.*.sku' => 'nullable|string|max:255',
+            'products.*.price' => 'nullable|numeric|min:0',
+            'products.*.stock' => 'nullable|integer|min:0',
+            'products.*.stockTimeline' => ['nullable', 'array'],
+            'products.*.stockTimeline.*.stock' => 'required|integer|min:0',
+            'products.*.stockTimeline.*.date' => 'required|date_format:Y-m-d H:i',
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->all());
+        }
+
+        foreach ($data['products'] as $item) {
+            $id = $item['id'] ?? null;
+
+            unset($item['id']);
+
+            $result = $this->productRepository->upsert($id, $item);
+
+            if ($result->wasRecentlyCreated) {
+                $created++;
+            } else {
+                $updated++;
+            }
+        }
+
+        return [
+            'created' => $created,
+            'updated' => $updated,
+        ];
     }
 }

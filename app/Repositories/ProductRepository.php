@@ -35,4 +35,12 @@ class ProductRepository
     {
         return Product::destroy($productId);
     }
+
+    public function upsert(int $id = null, array $data): Product
+    {
+        return Product::updateOrCreate(
+            ['id' => $id],
+            $data,
+        );
+    }
 }

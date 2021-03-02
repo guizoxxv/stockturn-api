@@ -171,4 +171,46 @@ class ProductServiceTest extends TestCase
             0
         );
     }
+
+    public function test_buckUpsert(): void
+    {
+        $products = [
+            'products' => [
+                [
+                    'id' => 1,
+                    'name' => 'Product 1_2',
+                ],
+                [
+                    'name' => 'Product 2',
+                    'sku' => '123',
+                    'price' => 10.00
+                ],
+            ],
+        ];
+
+        $result = $this->productService->buckUpsert($products);
+
+        $expected = [
+            'created' => 1,
+            'updated' => 1,
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function test_buckUpsert_invalid(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        $products = [
+            'products' => [
+                [
+                    'id' => 0,
+                    'name' => 'Product 1_2',
+                ],
+            ],
+        ];
+
+        $this->productService->buckUpsert($products);
+    }
 }
