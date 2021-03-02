@@ -7,6 +7,7 @@ use App\Services\ProductService;
 use Illuminate\Http\Request;
 use App\Filters\ProductFilter;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductController extends Controller
 {
@@ -17,7 +18,7 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): LengthAwarePaginator
     {
         $filter = new ProductFilter($request->all());
 

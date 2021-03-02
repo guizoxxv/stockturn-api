@@ -88,6 +88,7 @@ class ProductServiceTest extends TestCase
     {
         $result = $this->productService->store([
             'name' => 'Product A',
+            'sku' => uniqid(),
             'price' => 10.00,
         ]);
 

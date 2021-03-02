@@ -12,6 +12,13 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'sku',
         'price',
+        'stock',
+        'stockTimeline',
+    ];
+
+    protected $casts = [
+        'price' => 'float',
     ];
 }

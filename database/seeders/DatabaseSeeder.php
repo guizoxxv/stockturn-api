@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(AdminSeeder::class);
+
         DB::transaction(function () {
             User::factory()->create([
                 'name' => 'User',

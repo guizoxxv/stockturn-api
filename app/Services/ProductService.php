@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Validation\Rules\Sortable;
 use App\Models\Product;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
@@ -18,7 +19,7 @@ class ProductService
         $this->productRepository = $productRepository;
     }
 
-    public function index(ProductFilter $filter)
+    public function index(ProductFilter $filter): LengthAwarePaginator
     {
         $filterData = $filter->data();
 
@@ -48,7 +49,9 @@ class ProductService
     {
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
+            'sku' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
+            'quantity' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +65,9 @@ class ProductService
     {
         $validator = Validator::make($data, [
             'name' => 'nullable|string|max:255',
+            'sku' => 'nullable|string|max:255',
             'price' => 'nullable|numeric|min:0',
+            'quantity' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {

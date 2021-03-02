@@ -25,8 +25,28 @@ class ProductFactory extends Factory
             'name' => $this->faker
                 ->unique()
                 ->numerify('Product ###'),
+            'sku' => uniqid(),
             'price' => $this->faker->randomFloat(2, 0, 1000),
-
+            'stock' => $this->faker->numberBetween(0, 100),
+            'stockTimeline' => $this->generateStockTimeline(),
         ];
+    }
+
+    private function generateStockTimeline()
+    {
+        $count = $this->faker->numberBetween(0, 10);
+
+        $stockTimeline = collect([]);
+
+        for($i = 0; $i < $count; $i++) {
+            $item = [
+                'stock' => $this->faker->numberBetween(0, 100),
+                'date' => $this->faker->dateTimeThisYear(),
+            ];
+
+            $stockTimeline->push($item);
+        }
+
+        return $stockTimeline->sortBy('date')->toJson();
     }
 }

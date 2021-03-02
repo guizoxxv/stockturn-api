@@ -2,8 +2,6 @@
 
 namespace App\Filters;
 
-use App\User;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductFilter extends QueryFilters
@@ -19,6 +17,13 @@ class ProductFilter extends QueryFilters
     {
         if ($term) {
             return $this->builder->where('name', 'ILIKE', "%$term%");
+        }
+    }
+
+    public function sku(string $term = null): Builder
+    {
+        if ($term) {
+            return $this->builder->where('sku', $term);
         }
     }
 
