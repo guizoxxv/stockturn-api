@@ -6,3 +6,4 @@
 * Readme
 * Deploy
 * Bulk upsert via csv and background job
+* Guard to disable /api/doc on production

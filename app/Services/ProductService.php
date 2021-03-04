@@ -26,6 +26,7 @@ class ProductService
         if (count($filterData) > 0) {
             $validator = Validator::make($filterData, [
                 'name' => 'nullable|string|max:255',
+                'sku' => 'nullable|string|max:255',
                 'fromPrice' => 'nullable|numeric|min:0',
                 'toPrice' => 'nullable|numeric|min:0',
                 'fromDate' => 'nullable|date|date_format:Y-m-d',

@@ -18,3 +18,7 @@ Route::get('/', function () {
         'application' => config('app.name'),
     ]);
 });
+
+Route::get('/api/doc', function () {
+    return view('api-doc');
+});

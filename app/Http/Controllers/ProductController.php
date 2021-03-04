@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use App\Filters\ProductFilter;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends Controller
 {
@@ -36,29 +39,45 @@ class ProductController extends Controller
     public function show(string $productId): JsonResponse
     {
         if (!is_numeric($productId)) {
-            abort(400, 'Bad request');
+            throw new BadRequestHttpException('Bad request');
         }
 
-        $result = $this->productService->show((int)$productId);
+        try {
+            $result = $this->productService->show((int)$productId);
 
-        return response()->json($result);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            if ($e instanceOf ModelNotFoundException) {
+                throw new NotFoundHttpException('Not found');
+            }
+
+            throw $e;
+        }
     }
 
     public function update(Request $request, string $productId): JsonResponse
     {
         if (!is_numeric($productId)) {
-            abort(400, 'Bad request');
+            throw new BadRequestHttpException('Bad request');
         }
 
-        $result = $this->productService->update($request->all(), (int)$productId);
+        try {
+            $result = $this->productService->update($request->all(), (int)$productId);
 
-        return response()->json($result);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            if ($e instanceof ModelNotFoundException) {
+                throw new NotFoundHttpException('Not found');
+            }
+
+            throw $e;
+        }
     }
 
     public function destroy(string $productId): Response
     {
         if (!is_numeric($productId)) {
-            abort(400, 'Bad request');
+            throw new BadRequestHttpException('Bad request');
         }
 
         $this->productService->destroy((int)$productId);

@@ -15,7 +15,7 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-Route::get('/', function (Request $request) {
+Route::get('/', function () {
     return response()->json([
        'application' => config('app.name'),
     ]);

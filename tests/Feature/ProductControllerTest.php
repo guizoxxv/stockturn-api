@@ -73,9 +73,9 @@ class ProductControllerTest extends TestCase
     public function testUpdateInvalid(): void
     {
         $response = $this->putJson('api/products/1', [
-            'name' => 'Product 1_3',
-            'price' => -10,
-        ]);
+                'name' => 'Product 1_3',
+                'price' => -10,
+            ]);
 
         $response->assertStatus(422);
     }
