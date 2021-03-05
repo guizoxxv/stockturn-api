@@ -91,7 +91,6 @@ class ProductServiceTest extends TestCase
     {
         $result = $this->productService->store([
             'name' => 'Product A',
-            'sku' => uniqid(),
             'price' => 10.00,
         ]);
 
@@ -113,7 +112,6 @@ class ProductServiceTest extends TestCase
 
         $this->productService->store([
             'name' => 'Product A',
-            'sku' => uniqid(),
             'price' => 10.00,
             'stockTimeline' => [
                 [
@@ -121,18 +119,6 @@ class ProductServiceTest extends TestCase
                     'date' => '2021-03-02', // invalid date format
                 ]
             ]
-        ]);
-    }
-
-    public function test_store_unique_sku(): void
-    {
-        $this->expectException(ValidationException::class);
-
-        $sku = Product::first()->sku;
-
-        $this->productService->store([
-            'name' => 'Product A',
-            'sku' => $sku,
         ]);
     }
 
@@ -146,6 +132,28 @@ class ProductServiceTest extends TestCase
         );
 
         $this->assertEquals('Product 2', $result->name);
+    }
+
+    public function test_update_dirty_stock(): void
+    {
+        $product = Product::find(1);
+        $originalStockTimeline = $product->stockTimeline
+            ? count($product->stockTimeline)
+            : 0;
+
+        $result = $this->productService->update(
+            [
+                'name' => 'Product 2',
+                'stock' => $product->stock + 1,
+            ],
+            1,
+        );
+
+        $newStockTimelilne = $result->stockTimeline
+            ? count($result->stockTimeline)
+            : 0;
+
+        $this->assertEquals($newStockTimelilne, $originalStockTimeline + 1);
     }
 
     public function test_update_invalid(): void

@@ -45,7 +45,6 @@ class ProductControllerTest extends TestCase
     {
         $response = $this->postJson('api/products', [
             'name' => 'Product 1',
-            'sku' => uniqid(),
             'price' => 10.00,
         ]);
 
@@ -113,7 +112,6 @@ class ProductControllerTest extends TestCase
                 ],
                 [
                     'name' => 'Product 2',
-                    'sku' => '123',
                     'price' => 10.00
                 ],
             ],

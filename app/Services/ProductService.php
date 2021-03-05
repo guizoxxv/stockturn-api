@@ -62,7 +62,6 @@ class ProductService
     {
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:255|unique:products',
             'price' => 'required|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
             'stockTimeline' => ['nullable','array'],
@@ -81,7 +80,6 @@ class ProductService
     {
         $validator = Validator::make($data, [
             'name' => 'nullable|string|max:255',
-            'sku' => 'nullable|string|max:255|unique:products',
             'price' => 'nullable|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
             'stockTimeline' => ['nullable', 'array'],
