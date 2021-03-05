@@ -27,6 +27,20 @@ class ProductFilter extends QueryFilters
         }
     }
 
+    public function fromStock(string $term = null): Builder
+    {
+        if ($term) {
+            return $this->builder->where('stock', '>=', $term);
+        }
+    }
+
+    public function toStock(string $term = null): Builder
+    {
+        if ($term) {
+            return $this->builder->where('stock', '<=',$term);
+        }
+    }
+
     public function fromPrice(string $term = null): Builder
     {
         if ($term) {

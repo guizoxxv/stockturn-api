@@ -29,6 +29,8 @@ class ProductService
                 'sku' => 'nullable|string|max:255',
                 'fromPrice' => 'nullable|numeric|min:0',
                 'toPrice' => 'nullable|numeric|min:0',
+                'fromStock' => 'nullable|numeric|min:0',
+                'toStock' => 'nullable|numeric|min:0',
                 'fromDate' => 'nullable|date|date_format:Y-m-d',
                 'toDate' => 'nullable|date|date_format:Y-m-d',
                 'page' => 'nullable|integer|min:1',

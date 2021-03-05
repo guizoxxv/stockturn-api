@@ -11,7 +11,7 @@ class ProductRepository
     {
         $filterData = $filter->data();
 
-        $limit = $filterData['limit'] ?? 3;
+        $limit = $filterData['limit'] ?? 20;
 
         return Product::filter($filter)->orderBy('id')->paginate($limit);
     }
