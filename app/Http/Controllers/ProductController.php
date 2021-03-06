@@ -91,4 +91,11 @@ class ProductController extends Controller
 
         return response()->json($result);
     }
+
+    public function uploadCsv(Request $request): JsonResponse
+    {
+        $result = $this->productService->uploadCsv($request->all());
+
+        return response()->json($result);
+    }
 }

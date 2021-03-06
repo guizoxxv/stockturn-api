@@ -32,4 +32,6 @@ Route::resource('products', ProductController::class)
     ])
     ->middleware('auth:sanctum');
 
-Route::post('/products/bulk', [ProductController::class, 'bulkUpsert']);
+Route::post('/products/actions/bulk', [ProductController::class, 'bulkUpsert']);
+Route::post('/products/actions/upload-csv', [ProductController::class, 'uploadCsv'])
+    ->middleware('auth:sanctum');
