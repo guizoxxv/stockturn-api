@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,5 +34,10 @@ Route::resource('products', ProductController::class)
     ->middleware('auth:sanctum');
 
 Route::post('/products/actions/bulk', [ProductController::class, 'bulkUpsert']);
-Route::post('/products/actions/upload-csv', [ProductController::class, 'uploadCsv'])
+
+Route::resource('uploads', UploadController::class)
+    ->except([
+        'create',
+        'edit',
+    ])
     ->middleware('auth:sanctum');

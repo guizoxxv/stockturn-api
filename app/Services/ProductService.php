@@ -141,9 +141,4 @@ class ProductService
             'updated' => $updated,
         ];
     }
-
-    public function uploadCsv(array $data)
-    {
-        return $data;
-    }
 }
