@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\Upload;
+use App\Repositories\ProductRepository;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Validator;
+
+class ProcessCsvCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'app:process-csv {uploadId}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Process CSV file';
+
+    private ProductRepository $productRepository;
+    private int $lineNumber = 0;
+    private int $totalLines;
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct(ProductRepository $productRepository)
+    {
+        parent::__construct();
+
+        $this->productRepository = $productRepository;
+    }
+
+    public function handle()
+    {
+        $this->info('ProcessCsv job started');
+
+        $uploadId = (int)$this->argument('uploadId');
+
+        $upload = Upload::findOrFail($uploadId);
+
+        $filePath = storage_path('app/' . $upload->path);
+
+        $this->totalLines = $this->getTotalLines($filePath);
+
+        $handle = fopen($filePath, 'r');
+
+        $this->processFile($handle);
+
+        $this->info('ProcessCsv job finished');
+    }
+
+    private function getTotalLines(string $filePath)
+    {
+        $file = new \SplFileObject($filePath, 'r');
+
+        $file->seek(PHP_INT_MAX);
+
+        $lastLine = $file->key();
+
+        return $lastLine + 1;
+    }
+
+    private function processFile($handle)
+    {
+        while (($line = fgets($handle)) !== false) {
+            $line = trim($line);
+
+            if ($this->lineNumber === 0) {
+                $this->validateHeader($line);
+
+                $this->lineNumber++;
+
+                continue;
+            }
+
+            $this->info("Processing line {$this->lineNumber} of {$this->totalLines}.");
+
+            $formattedLine = $this->formatLine($line);
+
+            $this->info(json_encode($formattedLine));
+
+            $this->validateLine($formattedLine);
+
+            $this->info(json_encode($formattedLine));
+
+            $this->productRepository->upsert($formattedLine);
+
+            $this->lineNumber++;
+        }
+    }
+
+    private function validateHeader(string $line): void {
+        if ($line !== 'id,name,price,stock') {
+            throw new \Exception('Invalid header');
+        }
+    }
+
+    private function formatLine(string $line): array {
+        $formattedLine = [];
+        $line = explode(',', $line);
+
+        if (@$line[0]) {
+            $formattedLine['id'] = $line[0];
+        }
+
+        if (@$line[1]) {
+            $formattedLine['name'] = $line[1];
+        }
+
+        if (is_numeric($line[2])) {
+            $formattedLine['price'] = (float) $line[2];
+        }
+
+        if (is_numeric($line[3])) {
+            $formattedLine['price'] = (int) $line[3];
+        }
+
+        return $formattedLine;
+    }
+
+    private function validateLine(array $data): void {
+        $validator = Validator::make($data, [
+            'id' => 'nullable|integer|exists:products',
+            'name' => 'required_without:id|string|max:255',
+            'price' => 'required_without:id|numeric|min:0',
+            'stock' => 'nullable|integer|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            throw new \Exception(json_encode($validator->errors()->all()));
+        }
+    }
+}

@@ -7,6 +7,11 @@ use Illuminate\Http\UploadedFile;
 
 class UploadRepository
 {
+    public function find(int $uploadId): Upload
+    {
+        return Upload::findOrFail($uploadId);
+    }
+
     public function create(UploadedFile $file, string $path): Upload
     {
         return Upload::create([

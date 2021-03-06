@@ -8,8 +8,8 @@ use App\Filters\ProductFilter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class ProductController extends Controller
 {
@@ -39,7 +39,7 @@ class ProductController extends Controller
     public function show(string $productId): JsonResponse
     {
         if (!is_numeric($productId)) {
-            throw new BadRequestHttpException('Bad request');
+            throw new UnprocessableEntityHttpException('Unprocessable entity');
         }
 
         try {
@@ -58,7 +58,7 @@ class ProductController extends Controller
     public function update(Request $request, string $productId): JsonResponse
     {
         if (!is_numeric($productId)) {
-            throw new BadRequestHttpException('Bad request');
+            throw new UnprocessableEntityHttpException('Unprocessable entity');
         }
 
         try {
@@ -77,7 +77,7 @@ class ProductController extends Controller
     public function destroy(string $productId): Response
     {
         if (!is_numeric($productId)) {
-            throw new BadRequestHttpException('Bad request');
+            throw new UnprocessableEntityHttpException('Unprocessable entity');
         }
 
         $this->productService->destroy((int)$productId);

@@ -12,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
-    private $productRepository;
+    private ProductRepository $productRepository;
 
     public function __construct(ProductRepository $productRepository)
     {
@@ -110,12 +110,8 @@ class ProductService
             'products' => 'required|array',
             'products.*.id' => 'nullable|integer|exists:products',
             'products.*.name' => 'nullable|string|max:255',
-            'products.*.sku' => 'nullable|string|max:255',
             'products.*.price' => 'nullable|numeric|min:0',
             'products.*.stock' => 'nullable|integer|min:0',
-            'products.*.stockTimeline' => ['nullable', 'array'],
-            'products.*.stockTimeline.*.stock' => 'required|integer|min:0',
-            'products.*.stockTimeline.*.date' => 'required|date_format:Y-m-d H:i',
         ]);
 
         if ($validator->fails()) {
@@ -123,11 +119,7 @@ class ProductService
         }
 
         foreach ($data['products'] as $item) {
-            $id = $item['id'] ?? null;
-
-            unset($item['id']);
-
-            $result = $this->productRepository->upsert($id, $item);
+            $result = $this->productRepository->upsert($item);
 
             if ($result->wasRecentlyCreated) {
                 $created++;

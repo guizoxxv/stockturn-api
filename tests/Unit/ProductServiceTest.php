@@ -106,22 +106,6 @@ class ProductServiceTest extends TestCase
         ]);
     }
 
-    public function test_store_invalid_stockTimeline(): void
-    {
-        $this->expectException(ValidationException::class);
-
-        $this->productService->store([
-            'name' => 'Product A',
-            'price' => 10.00,
-            'stockTimeline' => [
-                [
-                    'stock' => 10,
-                    'date' => '2021-03-02', // invalid date format
-                ]
-            ]
-        ]);
-    }
-
     public function test_update(): void
     {
         $result = $this->productService->update(

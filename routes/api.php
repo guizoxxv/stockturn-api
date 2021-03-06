@@ -33,11 +33,14 @@ Route::resource('products', ProductController::class)
     ])
     ->middleware('auth:sanctum');
 
-Route::post('/products/actions/bulk', [ProductController::class, 'bulkUpsert']);
+Route::post('/products/actions/bulk-upsert', [ProductController::class, 'bulkUpsert']);
 
 Route::resource('uploads', UploadController::class)
     ->except([
         'create',
         'edit',
     ])
+    ->middleware('auth:sanctum');
+
+Route::post('uploads/process-csv/{productId}', [UploadController::class, 'processCsv'])
     ->middleware('auth:sanctum');

@@ -117,7 +117,7 @@ class ProductControllerTest extends TestCase
             ],
         ];
 
-        $response = $this->postJson('api/products/bulk', $products);
+        $response = $this->postJson('api/products/actions/bulk-upsert', $products);
 
         $response->assertStatus(200);
     }
@@ -133,7 +133,7 @@ class ProductControllerTest extends TestCase
             ],
         ];
 
-        $response = $this->postJson('api/products/bulk', $products);
+        $response = $this->postJson('api/products/actions/bulk-upsert', $products);
 
         $response->assertStatus(422);
     }

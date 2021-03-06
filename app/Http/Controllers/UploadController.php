@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class UploadController extends Controller
 {
@@ -53,5 +54,16 @@ class UploadController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function processCsv(int $productId): JsonResponse
+    {
+        if (!is_numeric($productId)) {
+            throw new UnprocessableEntityHttpException('Unprocessable entity');
+        }
+
+        $result = $this->uploadService->processCsv($productId);
+
+        return response()->json($result, 200);
     }
 }

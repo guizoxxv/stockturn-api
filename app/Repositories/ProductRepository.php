@@ -36,8 +36,10 @@ class ProductRepository
         return Product::destroy($productId);
     }
 
-    public function upsert(int $id = null, array $data): Product
+    public function upsert(array $data): Product
     {
+        $id = $data['id'] ?? null;
+
         return Product::updateOrCreate(
             ['id' => $id],
             $data,

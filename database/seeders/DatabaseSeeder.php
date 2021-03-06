@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Upload;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
@@ -22,6 +23,12 @@ class DatabaseSeeder extends Seeder
             User::factory()->create([
                 'name' => 'User',
                 'email' => 'user@example.com',
+            ]);
+
+            Upload::create([
+                'path' => 'uploads/upload_sample.csv',
+                'size' => 10,
+                'type' => 'application/csv',
             ]);
 
             Product::factory(10)->create();

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessCsvJob;
 use App\Models\Upload;
 use App\Repositories\UploadRepository;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 
 class UploadService
@@ -20,6 +20,20 @@ class UploadService
     {
         $path = $file->store('uploads');
 
-        return $this->uploadRepository->create($file, $path);
+        $upload = $this->uploadRepository->create($file, $path);
+
+        if ($upload->exists) {
+            ProcessCsvJob::dispatch($upload->id);
+        }
+
+        return $upload;
+    }
+
+    public function processCsv(): Upload {
+        $upload = $this->uploadRepository->find(1);
+
+        ProcessCsvJob::dispatch($upload->id);
+
+        return $upload;
     }
 }
