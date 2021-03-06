@@ -13,14 +13,7 @@ class Upload extends Model
         'path',
         'size',
         'type',
+        'status',
+        'message',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function (Upload $upload) {
-            // TODO: Trigger event to process file
-        });
-    }
 }

@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
                 'path' => 'uploads/upload_sample.csv',
                 'size' => 10,
                 'type' => 'application/csv',
+                'status' => 'CREATED',
             ]);
 
             Product::factory(10)->create();

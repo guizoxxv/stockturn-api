@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Upload;
 use App\Repositories\ProductRepository;
+use App\Repositories\UploadRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProcessCsvCommand extends Command
 {
@@ -24,6 +25,7 @@ class ProcessCsvCommand extends Command
     protected $description = 'Process CSV file';
 
     private ProductRepository $productRepository;
+    private UploadRepository $uploadRepository;
     private int $lineNumber = 0;
     private int $totalLines;
 
@@ -32,30 +34,57 @@ class ProcessCsvCommand extends Command
      *
      * @return void
      */
-    public function __construct(ProductRepository $productRepository)
-    {
+    public function __construct(
+        ProductRepository $productRepository,
+        UploadRepository $uploadRepository,
+    ) {
         parent::__construct();
 
         $this->productRepository = $productRepository;
+        $this->uploadRepository = $uploadRepository;
     }
 
     public function handle()
     {
         $this->info('ProcessCsv job started');
 
-        $uploadId = (int)$this->argument('uploadId');
+        try {
+            $uploadId = (int)$this->argument('uploadId');
 
-        $upload = Upload::findOrFail($uploadId);
+            $upload = $this->uploadRepository->find($uploadId);
 
-        $filePath = storage_path('app/' . $upload->path);
+            $filePath = storage_path('app/' . $upload->path);
 
-        $this->totalLines = $this->getTotalLines($filePath);
+            $this->totalLines = $this->getTotalLines($filePath);
 
-        $handle = fopen($filePath, 'r');
+            $handle = fopen($filePath, 'r');
 
-        $this->processFile($handle);
+            $this->processFile($handle);
 
-        $this->info('ProcessCsv job finished');
+            $this->uploadRepository->update(
+                [
+                    'status' => 'PROCESSED',
+                    'message' => null,
+                ],
+                $uploadId,
+            );
+
+            $this->info('ProcessCsv job finished');
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+
+            $this->error("ProcessCsv job failed - {$errorMessage}");
+
+            $this->uploadRepository->update(
+                [
+                    'status' => 'ERROR',
+                    'message' => $e->getMessage(),
+                ],
+                $uploadId,
+            );
+
+            throw $e;
+        }
     }
 
     private function getTotalLines(string $filePath)
@@ -71,31 +100,29 @@ class ProcessCsvCommand extends Command
 
     private function processFile($handle)
     {
-        while (($line = fgets($handle)) !== false) {
-            $line = trim($line);
+        DB::transaction(function () use ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $line = trim($line);
 
-            if ($this->lineNumber === 0) {
-                $this->validateHeader($line);
+                if ($this->lineNumber === 0) {
+                    $this->validateHeader($line);
+
+                    $this->lineNumber++;
+
+                    continue;
+                }
+
+                $this->info("Processing line {$this->lineNumber} of {$this->totalLines}.");
+
+                $formattedLine = $this->formatLine($line);
+
+                $this->validateLine($formattedLine);
+
+                $this->productRepository->upsert($formattedLine);
 
                 $this->lineNumber++;
-
-                continue;
             }
-
-            $this->info("Processing line {$this->lineNumber} of {$this->totalLines}.");
-
-            $formattedLine = $this->formatLine($line);
-
-            $this->info(json_encode($formattedLine));
-
-            $this->validateLine($formattedLine);
-
-            $this->info(json_encode($formattedLine));
-
-            $this->productRepository->upsert($formattedLine);
-
-            $this->lineNumber++;
-        }
+        });
     }
 
     private function validateHeader(string $line): void {

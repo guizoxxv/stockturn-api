@@ -18,6 +18,12 @@ class UploadRepository
             'path' => $path,
             'size' => $file->getSize(),
             'type' => $file->getMimeType(),
+            'status' => 'CREATED',
         ]);
+    }
+
+    public function update(array $data, int $uploadId): Upload
+    {
+        return tap(Upload::findOrFail($uploadId))->update($data);
     }
 }

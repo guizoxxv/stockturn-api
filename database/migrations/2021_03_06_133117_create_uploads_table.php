@@ -18,6 +18,8 @@ class CreateUploadsTable extends Migration
             $table->string('path');
             $table->unsignedInteger('size');
             $table->string('type');
+            $table->string('status'); // CREATED, PROCESSED, ERROR
+            $table->string('message')->nullable();
             $table->timestamps();
         });
     }
