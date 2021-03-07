@@ -19,7 +19,7 @@ services:
       - TZ=America/Sao_Paulo
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=turnoverbnb_products
+      - POSTGRES_DB=stockturn
   dbtest:
     image: postgres:13
     ports:
@@ -31,7 +31,7 @@ services:
       - TZ=America/Sao_Paulo
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=turnoverbnb_products_test
+      - POSTGRES_DB=stockturn_test
 volumes:
   dbdata:
     driver: local

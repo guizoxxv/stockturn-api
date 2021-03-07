@@ -1,6 +1,6 @@
 #%RAML 1.0
 ---
-title: Products API
+title: Stockturn API
 version: v1
 mediaType: application/json
 
@@ -16,10 +16,6 @@ types:
     Pageable:
         type: object
         properties:
-            data:
-                description: "Data content"
-                required: true
-                type: Product[]
             from:
                 description: "Previous page number"
                 required: true
@@ -87,15 +83,15 @@ types:
         properties:
             id:
                 description: "Product ID"
-                required: false
-                type: number
+                required: true
+                type: integer
             name:
                 description: "Product name"
                 required: true
                 type: string
             sku:
                 description: "Product sku"
-                required: false
+                required: true
                 type: string
             price:
                 description: "Product price"
@@ -104,19 +100,115 @@ types:
             stock:
                 description: "Product stock quantity"
                 required: true
-                type: number
+                type: integer
             stockTimeline:
                 description: "Stock timeline"
-                required: false
+                required: true
                 type: StockTimeline
-            # created_at:
-            #     description: "Product creation date"
-            #     required: false
-            #     type: datetime
-            # updated_at:
-            #     description: "Product last update date"
-            #     required: false
-            #     type: datetime
+            created_at:
+                description: "Product creation date"
+                required: true
+                type: datetime
+            updated_at:
+                description: "Product last update date"
+                required: true
+                type: datetime
+
+    ProductsPageable:
+        type: Pageable
+        properties:
+            data:
+                description: "Data content"
+                required: true
+                type: Product[]
+
+    ProductCreate:
+        type: object
+        properties:
+            name:
+                description: "Product name"
+                required: true
+                type: string
+            price:
+                description: "Product price"
+                required: true
+                type: number
+            stock:
+                description: "Product stock quantity"
+                required: false
+                type: integer
+
+    ProductUpdate:
+        type: object
+        properties:
+            id:
+                description: "Product id"
+                required: true
+                type: integer
+            name:
+                description: "Product name"
+                required: false
+                type: string
+            price:
+                description: "Product price"
+                required: false
+                type: number
+            stock:
+                description: "Product stock quantity"
+                required: false
+                type: integer
+
+    Upload:
+        type:  object
+        properties:
+            id:
+                description: "Upload id"
+                required: true
+                type: integer
+            path:
+                description: "Upload path"
+                required: false
+                type: string
+            size:
+                description: "Upload size"
+                required: true
+                type: number
+            type:
+                description: "Upload type"
+                required: true
+                type: string
+            status:
+                description: "Upload status"
+                required: true
+                type: string
+            message:
+                description: "Upload message"
+                required: false
+                type: string
+            created_at:
+                description: "Product creation date"
+                required: true
+                type: datetime
+            updated_at:
+                description: "Product last update date"
+                required: true
+                type: datetime
+
+    UploadsPageable:
+        type: Pageable
+        properties:
+            data:
+                description: "Data content"
+                required: true
+                type: Upload[]
+
+    UploadCreate:
+        type: object
+        properties:
+            file:
+                description: "File"
+                required: true
+                type: file
 
     StockTimeline:
         type: object
@@ -144,200 +236,144 @@ traits:
                             }
 
 /products:
-    get:
-        description: "List products"
-        queryParameters:
-            name:
-                description: "Product name"
-                required: false
-                type: string
-                example: "Produto A"
-            sku:
-                description: "Product sku"
-                required: false
-                type: string
-                example: "fd5fac04-f4af-4c02-b7ec-0d0d0c50af78"
-            fromPrice:
-                description: "Minimum price"
-                required: false
-                type: number
-                example: 5.00
-            toPrice:
-                description: "Maximum price"
-                required: false
-                type: number
-                example: 10.99
-            fromStock:
-                description: "Minimum stock"
-                required: false
-                type: number
-                example: 5
-            toStock:
-                description: "Maximum stock"
-                required: false
-                type: number
-                example: 10
-            fromDate:
-                description: "Minimum creation date (format: yyyy-mm-dd)"
-                required: false
-                type: string
-                example: "2021-02-01"
-            toDate:
-                description: "Maximum creation date (format: yyyy-mm-dd)"
-                required: false
-                type: string
-                example: "2021-02-15"
-            page:
-                description: "Page number"
-                required: false
-                default: 1
-                type: number
-                example: 2
-            sort:
-                description: "Property to sort result (format: property_name:[asc/desc])"
-                required: false
-                default: id:asc
-                type: string
-                example: "price:desc"
-        responses:
-            200:
-                description: "Products list"
-                body:
-                    application/json:
-                        type: Pageable
-                        example: |
-                            {
-                                "current_page": 1,
-                                "data": [
-                                    {
-                                        "id": 8,
-                                        "name": "Product 477",
-                                        "sku": "603e4dd829f9c",
-                                        "price": 690.53,
-                                        "stock": 23,
-                                        "stockTimeline": [
-                                            {
-                                                "stock": 90,
-                                                "date": "2021-01-10 04:43"
-                                            },
-                                            {
-                                                "stock": 55,
-                                                "date": "2021-01-11 15:13"
-                                            },
-                                            {
-                                                "stock": 35,
-                                                "date": "2021-01-11 19:55"
-                                            },
-                                            {
-                                                "stock": 19,
-                                                "date": "2021-01-21 19:33"
-                                            },
-                                            {
-                                                "stock": 28,
-                                                "date": "2021-02-04 00:16"
-                                            },
-                                            {
-                                                "stock": 24,
-                                                "date": "2021-02-10 06:22"
-                                            },
-                                            {
-                                                "stock": 50,
-                                                "date": "2021-02-26 00:46"
-                                            },
-                                            {
-                                                "stock": 27,
-                                                "date": "2021-02-28 20:00"
-                                            }
-                                        ],
-                                        "created_at": "2021-03-02T14:38:16.000000Z",
-                                        "updated_at": "2021-03-02T14:38:16.000000Z"
-                                    },
-                                    {
-                                        "id": 4,
-                                        "name": "Product 796",
-                                        "sku": "603e4dd829bf4",
-                                        "price": 509.07,
-                                        "stock": 80,
-                                        "stockTimeline": [
-                                            {
-                                                "stock": 82,
-                                                "date": "2021-01-02 17:42"
-                                            },
-                                            {
-                                                "stock": 57,
-                                                "date": "2021-01-03 18:51"
-                                            },
-                                            {
-                                                "stock": 51,
-                                                "date": "2021-01-10 19:13"
-                                            },
-                                            {
-                                                "stock": 64,
-                                                "date": "2021-01-30 21:54"
-                                            },
-                                            {
-                                                "stock": 88,
-                                                "date": "2021-02-05 08:49"
-                                            },
-                                            {
-                                                "stock": 16,
-                                                "date": "2021-02-07 09:03"
-                                            },
-                                            {
-                                                "stock": 74,
-                                                "date": "2021-02-20 23:51"
-                                            },
-                                            {
-                                                "stock": 41,
-                                                "date": "2021-02-21 05:15"
-                                            }
-                                        ],
-                                        "created_at": "2021-03-02T14:38:16.000000Z",
-                                        "updated_at": "2021-03-02T14:38:16.000000Z"
-                                    }
-                                ],
-                                "first_page_url": "http://api.local.test:8001/api/products?page=1",
-                                "from": 1,
-                                "last_page": 1,
-                                "last_page_url": "http://api.local.test:8001/api/products?page=1",
-                                "links": [
-                                    {
-                                        "url": null,
-                                        "label": "&laquo; Previous",
-                                        "active": false
-                                    },
-                                    {
-                                        "url": "http://api.local.test:8001/api/products?page=1",
-                                        "label": "1",
-                                        "active": true
-                                    },
-                                    {
-                                        "url": null,
-                                        "label": "Next &raquo;",
-                                        "active": false
-                                    }
-                                ],
-                                "next_page_url": null,
-                                "path": "http://api.local.test:8001/api/products",
-                                "per_page": "3",
-                                "prev_page_url": null,
-                                "to": 2,
-                                "total": 2
-                            }
+    description: "Products resource"
 
-    post:
-        description: "Create new product"
-        body:
-            type: Product
+    /:
+        get:
+            description: "Get a list of products"
+            queryParameters:
+                name:
+                    description: "Product name"
+                    required: false
+                    type: string
+                    example: "Produto A"
+                sku:
+                    description: "Product sku"
+                    required: false
+                    type: string
+                    example: "fd5fac04-f4af-4c02-b7ec-0d0d0c50af78"
+                fromPrice:
+                    description: "Minimum price"
+                    required: false
+                    type: number
+                    example: 5.00
+                toPrice:
+                    description: "Maximum price"
+                    required: false
+                    type: number
+                    example: 10.99
+                fromStock:
+                    description: "Minimum stock"
+                    required: false
+                    type: integer
+                    example: 5
+                toStock:
+                    description: "Maximum stock"
+                    required: false
+                    type: integer
+                    example: 10
+                fromDate:
+                    description: "Minimum creation date (format: yyyy-mm-dd)"
+                    required: false
+                    type: string
+                    example: "2021-02-01"
+                toDate:
+                    description: "Maximum creation date (format: yyyy-mm-dd)"
+                    required: false
+                    type: string
+                    example: "2021-02-15"
+                page:
+                    description: "Page number"
+                    required: false
+                    default: 1
+                    type: integer
+                    example: 2
+                sort:
+                    description: "Property to sort result (format: property_name:[asc/desc])"
+                    required: false
+                    default: id:asc
+                    type: string
+                    example: "price:desc"
+            responses:
+                200:
+                    description: "Products list"
+                    body:
+                        application/json:
+                            type: ProductsPageable
+                            example: !include examples/productsPageable.json
 
-/products/{productId}:
-    get:
-        description: "Get a product"
-        is: [ has404 ]
+        post:
+            description: "Create new product"
+            body:
+                type: ProductCreate
+                example: !include examples/productCreate.json
+            responses:
+                201:
+                    description: "Product created"
+                    body:
+                        application/json:
+                            type: Product
+                            example: !include examples/product.json
 
-    put:
-        description: "Update a product"
-        is: [ has404 ]
+    /{productId}:
+        uriParameters:
+            productId:
+                description: "Product ID"
+                type: integer
 
-    delete:
-        description: "Delete a product"
+        get:
+            description: "Get a product"
+            is: [ has404 ]
+            responses:
+                200:
+                    description: "Product show"
+                    body:
+                        application/json:
+                            type: Product
+                            example: !include examples/product.json
+
+        put:
+            description: "Update a product"
+            is: [ has404 ]
+            body:
+                type: ProductUpdate
+                example: !include examples/productUpdate.json
+            responses:
+                200:
+                    description: "Product updated"
+                    body:
+                        application/json:
+                            type: Product
+                            example: !include examples/product.json
+
+        delete:
+            description: "Delete a product"
+            responses:
+                204:
+                    description: "Product deleted"
+
+/uploads:
+    description: "Uploads resource"
+
+    /:
+        get:
+            description: "Get a list of uploads"
+            responses:
+                200:
+                    description: "Uploads list"
+                    body:
+                        application/json:
+                            type: UploadsPageable
+                            example: !include examples/uploadsPageable.json
+
+        post:
+            description: "Create new upload (Upload file)"
+            body:
+                type: UploadCreate
+            responses:
+                201:
+                    description: "Upload created"
+                    body:
+                        application/json:
+                            type: Upload
+                            example: !include examples/upload.json

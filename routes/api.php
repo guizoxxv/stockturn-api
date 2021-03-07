@@ -22,28 +22,28 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::resource('products', ProductController::class)
-    ->except([
-        'create',
-        'edit',
-    ])
-    ->middleware('auth:sanctum');
+    Route::resource('products', ProductController::class)
+        ->except([
+            'create',
+            'edit',
+        ]);
 
-Route::post('/products/actions/bulk-upsert', [ProductController::class, 'bulkUpsert']);
+    Route::post('/products/actions/bulk-upsert', [ProductController::class, 'bulkUpsert']);
 
-Route::resource('uploads', UploadController::class)
-    ->except([
-        'create',
-        'edit',
-        'show',
-        'update',
-        'destroy',
-    ])
-    ->middleware('auth:sanctum');
+    Route::resource('uploads', UploadController::class)
+        ->except([
+            'create',
+            'edit',
+            'show',
+            'update',
+            'destroy',
+        ]);
+});
 
 Route::post('uploads/process-csv/{productId}', [UploadController::class, 'processCsv'])
-    ->middleware('auth:sanctum');
+    ->middleware('local');

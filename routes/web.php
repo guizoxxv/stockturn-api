@@ -21,4 +21,4 @@ Route::get('/', function () {
 
 Route::get('/api/doc', function () {
     return view('api-doc');
-});
+})->middleware('local');
