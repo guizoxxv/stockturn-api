@@ -7,6 +7,14 @@ use Illuminate\Http\UploadedFile;
 
 class UploadRepository
 {
+
+    public function findAll(array $data)
+    {
+        $limit = $data['limit'] ?? 20;
+
+        return Upload::orderBy('id')->paginate($limit);
+    }
+
     public function find(int $uploadId): Upload
     {
         return Upload::findOrFail($uploadId);

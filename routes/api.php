@@ -39,6 +39,9 @@ Route::resource('uploads', UploadController::class)
     ->except([
         'create',
         'edit',
+        'show',
+        'update',
+        'destroy',
     ])
     ->middleware('auth:sanctum');
 
