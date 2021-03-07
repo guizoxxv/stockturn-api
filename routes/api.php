@@ -43,7 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
             'update',
             'destroy',
         ]);
+
+    Route::get('/uploads/actions/get-sample-csv', [UploadController::class, 'getSampleCsv']);
 });
+
 
 Route::post('uploads/process-csv/{productId}', [UploadController::class, 'processCsv'])
     ->middleware('local');

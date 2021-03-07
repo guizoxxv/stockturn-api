@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
@@ -51,5 +52,10 @@ class UploadController extends Controller
         $result = $this->uploadService->processCsv($productId);
 
         return response()->json($result, 200);
+    }
+
+    public function getSampleCsv()
+    {
+        return Storage::download('uploads/upload_sample.csv');
     }
 }
