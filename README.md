@@ -90,13 +90,19 @@ composer install
 php artisan key:generate
 ```
 
-3. Generate random data (Optional)
+3. Run the migrations (create tables)
+
+```console
+php artisan migrate
+```
+
+4. Generate random data (Optional)
 
 ```console
 php artisan db:seed
 ```
 
-4. Generate admin user
+5. Generate admin user
 
 ```console
 php artisan app:create-admin
@@ -110,11 +116,21 @@ php artisan app:create-admin
 php artisan db:seed
 ```
 
-6. Create a symbolic link to the storage
+6. Set permissions to write in the storage folder
 
 ```console
-php artisan storage:link
+sudo chmod -R 777 storage
 ```
+
+> Avoid using 777 permission in production.
+
+7. Configure queue listener to process messages
+
+```console
+php artisan queue:listen
+```
+
+> In production use [supervisor](https://laravel.com/docs/8.x/queues#supervisor-configuration) to keep the process running in the background and restart on fails.
 
 ## Documentation
 
