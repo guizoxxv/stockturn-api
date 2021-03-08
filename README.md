@@ -1,6 +1,8 @@
 # Stockturn API
 
-Stock API is a  REST JSON API for the Stockturn application which provides products CRUD, bulk upsert via CSV and stock timeline.
+Stockturn API is a  REST JSON API for the Stockturn application which provides products CRUD, bulk upsert via CSV and stock timeline.
+
+> Frontend in https://github.com/guizoxxv/stockturn-app
 
 ## Tools
 * [PHP](https://www.php.net/) v8.0.2
