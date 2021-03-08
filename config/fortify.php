@@ -77,7 +77,7 @@ return [
     'prefix' => '',
 
     // 'domain' => null,
-    'domain' => 'api.local.test',
+    'domain' => env('FORTIFY_DOMAIN', 'api.local.test'),
 
     /*
     |--------------------------------------------------------------------------
