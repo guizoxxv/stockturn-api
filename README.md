@@ -22,7 +22,7 @@ Stock API is a  REST JSON API for the Stockturn application which provides produ
 
 The backend (this application) is hosted at `http://api.local.test:8001` and the frontend at `http://local.test:3000`.
 
-> If you change the hosts names be sure to update the variables `SESSION_DOMAIN` and `SANCTUM_STATEFUL_DOMAINS` in the `.env` file.
+> If you change the hosts names be sure to update the variables `SESSION_DOMAIN`, `SANCTUM_STATEFUL_DOMAINS` and `FORTIFY_DOMAIN` in the `.env` file.
 
 ## Installation
 

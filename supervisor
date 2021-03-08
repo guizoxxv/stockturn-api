@@ -1,3 +1,5 @@
+apt-get install supervisor
+
 vim /etc/supervisor/conf.d/laravel-worker.conf
 
 [program:laravel-worker]
