@@ -136,7 +136,9 @@ php artisan queue:listen
 
 ## Documentation
 
-Navigate to `/api/doc`. This documentation was build with [RAML](https://raml.org/).
+Navigate to `/api/doc`. This documentation was build with [RAML](https://raml.org/). You can import the [postman](https://www.postman.com/) collection and environment variables from `etc/postman` with the requests.
+
+> The Postman resources include a pre-request script to set the cookie.
 
 ## Testing
 
